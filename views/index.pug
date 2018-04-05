@@ -8,7 +8,7 @@ html(lang="en")
         link(rel='stylesheet',href="/static/css/progressively.css")
         link(rel='stylesheet', href='/static/css/common.css')
         link(rel='stylesheet', href='/static/css/main.css')
-    body
+    body(oncontextmenu='self.event.returnValue=false')
         header
             div.container
                 a.logo(href="/")
@@ -41,10 +41,10 @@ html(lang="en")
         div.container
             each val in doc
                 - var location = (val.country && val.city) ? val.country + ', ' + val.city : false;
-                - location = val.continent ? (location ? val.continent + ', ' + location : val.continent) : location;
+                - location = val.continent ? (location ? val.continent + ', ' + location : val.continent) : location;                
                 div.item
                     div.card.progressive
-                        img.progressive__img.progressive--not-loaded(data-progressive=val.thumbnail,src=val.smallpic )
+                        img.progressive__img.progressive--not-loaded(data-progressive=val.middle,src=val.small )
                         a.mark(href=`/photo/${val.photo}?force=${page.currPage}_${page.curr}`)
                         div.description
                             h3 #{val.copyright}
@@ -55,10 +55,13 @@ html(lang="en")
                                 p.location
                                     i.icon.icon-location
                                     em.t #{location}
-                        div.options
-                            span.ctrl.eye
-                                i.icon.icon-eye
+                            p.view
+                                i.icon.icon-eye 
                                 em.t #{val.views}
+                        div.options
+                            a.ctrl.share(href=val.share,target="_blank",rel="nofollow",title="分享到微博")
+                                i.icon.icon-share
+                                em.t 分享
                             span.ctrl.heart(photo=val.id,likes=val.likes)
                                 i.icon.icon-heart
                                 em.t #{val.likes}
@@ -70,17 +73,12 @@ html(lang="en")
             - var url = page.currPage === 'home' ? '/' : `/${page.currPage}`
             - var prev = page.prev === 1 ? `${url}` : `${url}?p=${page.prev}`;
             - var next = `${url}?p=${page.next}`;
-            a(href=prev)
-                i.icon.icon-prev 上一页
+            a(href=prev) 上一页
             span #{page.curr} / #{page.pageCount}
             a(href=next) 下一页
-                i.icon.icon-next
         div.copyright
-            p 
-                a(id="jsl_speed_stat0",rel='nofollow',href="http://www.yunaq.com/#zid=5a1f9525df224fabd5e3dcc5",target="_blank") 知道创宇云安全
-                script(src="//static.yunaq.com/static/js/stat/picture_stat.js",charset="utf-8",type="text/javascript")
             p 本站所有图片均来自<a rel='nofollow' href="http://cn.bing.com" target="_blank">必应搜索</a>
-            p Copyright &copy; 2016 - 2017 <a href="http://ioliu.cn" target="_blank">云淡风轻</a>
+            p Copyright &copy; 2016 - 2018 <a href="http://ioliu.cn" target="_blank">云淡风轻</a>
 
         script(src="/static/js/jquery-1.12.4.min.js")
         script(src="/static/js/progressively.js")
@@ -100,4 +98,8 @@ html(lang="en")
                 if (DEVICE.isMobile) {
                     $(document.body).addClass('mobile');
                 }
+                $(document).on('keydown',function(e){
+                    e = e.event || window.event;
+                    if(e.keyCode == 123 || (e.ctrlKey&&e.shiftKey&&e.keyCode==73) || (e.ctrlKey&&e.keyCode==85)) return false
+                })
             });

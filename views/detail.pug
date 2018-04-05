@@ -14,20 +14,24 @@ html(lang="en")
         link(rel='stylesheet', href='/static/css/main.css')
         
 
-    body.detail
+    body.detail(oncontextmenu='self.event.returnValue=false')
         div.preview
             - var small = doc.photo;
             div.progressive
-                - var link =  'http://images.ioliu.cn' ;
-                img.target.progressive__img.progressive--not-loaded(src=doc.thumbnail,data-progressive=`${link}/bing/${small}_1920x1080.jpg`)
+                - var cdn1 = `http://h1.ioliu.cn/bing/${doc.photo}_1366x768.jpg`;
+                - var root =  'https://bing.ioliu.cn' ;
+                - var attr = (!!doc['title'] && !!doc['description']) ? `#${doc['title']}# ${doc['description']}` : `${doc['copyright']}`;
+                - var desc = `#必应壁纸# ${doc.dt} / ${attr}`;
+                - var link = `http://service.weibo.com/share/share.php?url=${root}/photo/${doc.photo}&appkey=1833831541&ralateUid=5893653736&pic=${cdn1}&title=`+encodeURIComponent(desc.substring(0,126)+'...');
+                img.target.progressive__img.progressive--not-loaded(src=doc.small,data-progressive=doc.large)
             div.mark
             div.options
                 a.ctrl.left(href=`${doc.back_url}`)
                     i.icon.icon-left
                     em.t BACK
-                span.ctrl.eye
-                    i.icon.icon-eye
-                    em.t #{doc.views}
+                a.ctrl.share(href=link,target="_blank",rel="nofollow",title="分享到微博")
+                    i.icon.icon-share
+                    em.t 分享
                 span.ctrl.heart(photo=doc.id,likes=doc.likes)
                     i.icon.icon-heart
                     em.t #{doc.likes}
@@ -43,7 +47,9 @@ html(lang="en")
                     p.location
                         i.icon.icon-location
                         em.t #{location}
-
+                p.view
+                    i.icon.icon-eye 
+                    em.t #{doc.views}
         script(src='/static/js/jquery-1.12.4.min.js')
         script(src='/static/js/progressively.js')
         script(src='/static/js/baidu-analysis.js')
@@ -77,4 +83,8 @@ html(lang="en")
                     }
                 });
 
+                $(document).on('keydown',function(e){
+                    e = e.event || window.event;
+                    if(e.keyCode == 123 || (e.ctrlKey&&e.shiftKey&&e.keyCode==73) || (e.ctrlKey&&e.keyCode==85)) return false
+                })
             });

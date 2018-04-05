@@ -9,7 +9,6 @@ var request = require('superagent');
 var index = require('./routes/index');
 var photo = require('./routes/photo');
 var weibo = require('./routes/weibo');
-var ranking = require('./routes/ranking');
 var v1 = require('./routes/v1');
 
 // 定时器
@@ -105,7 +104,6 @@ app.use(function(req, res, next) {
 app.use('/', index);
 app.use('/photo', photo);
 app.use('/weibo', weibo);
-app.use('/ranking', ranking);
 app.use('/v1', v1);
 
 app.get('/about.html', function(req, res, next) {
